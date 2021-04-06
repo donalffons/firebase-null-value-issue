@@ -1,17 +1,29 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import firebase from 'firebase';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+var firebaseConfig = {
+  apiKey: "AIzaSyArV5UWpWoh5hulUA8iz6xwBXchQ8NhfuU",
+  authDomain: "fir-null-value-issue.firebaseapp.com",
+  projectId: "fir-null-value-issue",
+  storageBucket: "fir-null-value-issue.appspot.com",
+  messagingSenderId: "978049406822",
+  appId: "1:978049406822:web:be533f661a296e3fd1daa7",
+  measurementId: "G-MLLPNXPD3L"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+firebase.auth().signInAnonymously()
+  .then(async () => {
+    const db = firebase.firestore();
+    db.settings({host: "localhost:8080", ssl: false});
+    await firebase.firestore().doc("/bla/keks").set({
+        asd: 1,
+    }, {
+        merge: true,
+    });
+    await firebase.auth().signOut();
+  })
+  .catch((error) => {
+    throw new Error(error);
+  });
